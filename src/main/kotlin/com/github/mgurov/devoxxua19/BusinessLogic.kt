@@ -6,7 +6,7 @@ object BusinessLogic {
     }
 
     fun countOpenQuantity(given: List<PurchaseOrder>): Int {
-        return given.sumBy { it.segments.totalQuantity() }
+        return given.sumBy { it.segments.sumQuantity(filter = {segment -> segment.isOpen()}) }
     }
 }
 

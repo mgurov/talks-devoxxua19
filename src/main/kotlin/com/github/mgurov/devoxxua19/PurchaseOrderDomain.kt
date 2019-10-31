@@ -9,7 +9,7 @@ data class PurchaseOrder(
     val segments: List<Segment>
 ) {
     init {
-        val segmentQuantity = segments.totalQuantity()
+        val segmentQuantity = segments.sumQuantity()
         check(segmentQuantity == quantity)
             {"Purchase order quantity ($quantity) != ∑ segment quantity ($segmentQuantity)"}
     }
@@ -19,10 +19,16 @@ data class Segment(
     val quantity: Int,
     val status: SegmentStatus,
     val date: LocalDate
-)
+) {
+    fun isOpen() = status.open
+}
 
-fun Iterable<Segment>.totalQuantity() = this.sumBy { it.quantity }
+fun Iterable<Segment>.sumQuantity(filter: (Segment) -> Boolean = {true}) =
+    this.filter(filter).sumBy {  it.quantity }
 
-enum class SegmentStatus {
-    NEW, CONFIRMED, DELIVERED, CANCELLED
+enum class SegmentStatus(val open: Boolean) {
+    NEW(open = true),
+    CONFIRMED(open = true),
+    DELIVERED(open = false),
+    CANCELLED(open = false)
 }
