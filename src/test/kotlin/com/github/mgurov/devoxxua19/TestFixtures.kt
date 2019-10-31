@@ -4,21 +4,7 @@ import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-fun aPurchaseOrder(
-    product: String = "whatever product",
-    quantity: Int? = null,
-    buyer: String = "me, handsome",
-    segments: List<Segment> = listOf(defaultSegment.copy(quantity = quantity ?: 1))
-): PurchaseOrder {
-    return PurchaseOrder(
-        product = product,
-        quantity = quantity ?: segments.toList().sumQuantity(),
-        buyer = buyer,
-        segments = segments.toList()
-    )
-}
-
-fun aPurchaseOrderDsl(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+fun aPurchaseOrder(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
     val builder = PurchaseOrderBuilder()
     builder.adjust()
     return builder.build()
@@ -32,7 +18,7 @@ class PurchaseOrderBuilder(
     fun build() : PurchaseOrder {
 
         if (segments.isEmpty()) {
-            segments += defaultSegment
+            segments += Segment(quantity = 1, status = SegmentStatus.NEW, date = LocalDate.now().plusDays(1))
         }
 
         return PurchaseOrder(
@@ -62,23 +48,10 @@ class SegmentBuilder(
     )
 }
 
-fun aSegment(
-    quantity: Int = 1,
-    status: SegmentStatus = SegmentStatus.NEW,
-    date: LocalDate = LocalDate.now().plusDays(1)
-) = Segment(
-    quantity = quantity,
-    status = status,
-    date = date
-)
-
-val defaultSegment = Segment(quantity = 1, status = SegmentStatus.NEW, date = LocalDate.now().plusDays(1))
-
-
 class PurchaseOrderFixtureTests {
     @Test
     fun `should default to quantity 1`() {
-        val actual = aPurchaseOrder()
+        val actual = aPurchaseOrder {}
 
         softly {
             assertThat(actual.quantity).isEqualTo(1)
@@ -88,7 +61,7 @@ class PurchaseOrderFixtureTests {
 
     @Test
     fun `dsl support`() {
-        val po: PurchaseOrder = aPurchaseOrderDsl {
+        val po: PurchaseOrder = aPurchaseOrder {
 
             buyer = "buyer name"
 

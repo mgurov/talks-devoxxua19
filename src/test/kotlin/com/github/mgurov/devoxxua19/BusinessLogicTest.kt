@@ -7,9 +7,15 @@ class BusinessLogicTest {
 
     @Test
     fun `should select by buyer - helper functions`() {
-        val expected1 = aPurchaseOrder(buyer = "me")
-        val expected2 = aPurchaseOrder(buyer = "me")
-        val unexpected1 = aPurchaseOrder(buyer = "someone else")
+        val expected1 = aPurchaseOrder {
+            buyer = "me"
+        }
+        val expected2 = aPurchaseOrder {
+            buyer = "me"
+        }
+        val unexpected1 = aPurchaseOrder {
+            buyer = "someone else"
+        }
 
         //when
         val actual = BusinessLogic.selectByBuyer(
@@ -30,14 +36,14 @@ class BusinessLogicTest {
     @Test
     fun `should count open quantity`() {
         val given = listOf(
-            aPurchaseOrderDsl {
+            aPurchaseOrder {
                 segment { status = SegmentStatus.NEW; quantity = 1 }
             },
-            aPurchaseOrderDsl {
+            aPurchaseOrder {
                 segment { status = SegmentStatus.CANCELLED; quantity = 2 }
                 segment { status = SegmentStatus.CONFIRMED; quantity = 3 }
             },
-            aPurchaseOrderDsl {
+            aPurchaseOrder {
                 segment { status = SegmentStatus.DELIVERED; quantity = 4 }
             }
         )
