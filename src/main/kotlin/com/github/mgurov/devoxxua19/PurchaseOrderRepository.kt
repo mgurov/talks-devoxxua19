@@ -1,5 +1,9 @@
 package com.github.mgurov.devoxxua19
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Component
@@ -20,8 +24,8 @@ class PurchaseOrderRepository(
             mapOf(
                 "product" to po.product,
                 "quantity" to po.quantity,
-                "buyer" to po.quantity,
-                "segments" to "[]"
+                "buyer" to po.buyer,
+                "segments" to postgresObjectMapper.writeValueAsString(po.segments)
             )
         )
 
@@ -29,15 +33,24 @@ class PurchaseOrderRepository(
     }
 
     fun load(id: Long): PurchaseOrder? {
-        return jdbcTemplate.queryForObject("select * from purchase_orders where id = :id", mapOf("id" to id), rowMapper)
+        return jdbcTemplate.queryForObject("""
+            select * from purchase_orders 
+            where id = :id
+        """.trimIndent(), mapOf("id" to id), rowMapper)
     }
 
-    val rowMapper: (ResultSet, Int) -> PurchaseOrder = {rs, _ ->
+    private val rowMapper: (ResultSet, Int) -> PurchaseOrder = {rs, _ ->
         PurchaseOrder(
             rs.getString("product"),
             rs.getInt("quantity"),
             rs.getString("buyer"),
-            emptyList()
+            postgresObjectMapper.readValue(rs.getString("segments"), segmentListType)
         )
     }
+
+    private val segmentListType = object : TypeReference<List<Segment>>() {}
 }
+
+private val postgresObjectMapper = jacksonObjectMapper()
+    .registerModule(JavaTimeModule())
+    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
