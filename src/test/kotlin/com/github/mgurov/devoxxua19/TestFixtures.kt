@@ -1,5 +1,6 @@
 package com.github.mgurov.devoxxua19
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -24,7 +25,7 @@ class PurchaseOrderBuilder(
             product = product,
             quantity = segments.sumQuantity(),
             buyer = buyer,
-            segments = segments //TODO: check whether we need copy or not
+            segments = segments.toList()
         )
     }
 
@@ -55,6 +56,22 @@ class PurchaseOrderFixtureTests {
         softly {
             assertThat(actual.quantity).isEqualTo(1)
             assertThat(actual.segments.sumQuantity()).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun `should not keep reference to the original list`() {
+        val actual = PurchaseOrderBuilder()
+        actual.segment {  }
+        val firstBuild = actual.build()
+
+        assertThat(firstBuild.segments).hasSize(1)
+
+        actual.segment {  }
+
+        softly {
+            assertThat(firstBuild.segments).hasSize(1)
+            assertThat(actual.build().segments).hasSize(2)
         }
     }
 
