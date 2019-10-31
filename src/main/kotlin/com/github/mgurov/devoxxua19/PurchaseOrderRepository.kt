@@ -3,6 +3,7 @@ package com.github.mgurov.devoxxua19
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert
 import org.springframework.stereotype.Component
+import java.sql.ResultSet
 
 @Component
 class PurchaseOrderRepository(
@@ -28,6 +29,15 @@ class PurchaseOrderRepository(
     }
 
     fun load(id: Long): PurchaseOrder? {
-        TODO()
+        return jdbcTemplate.queryForObject("select * from purchase_orders where id = :id", mapOf("id" to id), rowMapper)
+    }
+
+    val rowMapper: (ResultSet, Int) -> PurchaseOrder = {rs, _ ->
+        PurchaseOrder(
+            rs.getString("product"),
+            rs.getInt("quantity"),
+            rs.getString("buyer"),
+            emptyList()
+        )
     }
 }
