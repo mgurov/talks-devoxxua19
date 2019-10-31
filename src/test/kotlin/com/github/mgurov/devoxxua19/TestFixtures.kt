@@ -18,9 +18,9 @@ fun aPurchaseOrder(
     )
 }
 
-private fun aPurchaseOrderDsl(function: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+private fun aPurchaseOrderDsl(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
     val builder = PurchaseOrderBuilder()
-    builder.function()
+    builder.adjust()
     return builder.build()
 }
 
@@ -42,6 +42,24 @@ class PurchaseOrderBuilder(
             segments = segments //TODO: check whether we need copy or not
         )
     }
+
+    fun aSegmentDsl(adjust: SegmentBuilder.() -> Unit) {
+        val builder = SegmentBuilder()
+        builder.adjust()
+        segments += builder.build()
+    }
+}
+
+class SegmentBuilder(
+    var quantity: Int = 1,
+    var status: SegmentStatus = SegmentStatus.NEW,
+    var date: LocalDate = LocalDate.now().plusDays(1)
+) {
+    fun build() = Segment(
+        quantity = quantity,
+        status = status,
+        date = date
+    )
 }
 
 fun aSegment(
@@ -74,14 +92,14 @@ class PurchaseOrderFixtureTests {
 
             buyer = "buyer name"
 
-//            aSegmentDsl {
-//                status = SegmentStatus.CANCELLED
-//                quantity = 2
-//            }
-//            aSegmentDsl {
-//                status = SegmentStatus.CONFIRMED
-//                quantity = 3
-//            }
+            aSegmentDsl {
+                status = SegmentStatus.CANCELLED
+                quantity = 2
+            }
+            aSegmentDsl {
+                status = SegmentStatus.CONFIRMED
+                quantity = 3
+            }
         }
 
         //TODO: revisit
