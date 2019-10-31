@@ -1,6 +1,5 @@
 package com.github.mgurov.devoxxua19
 
-import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -17,6 +16,32 @@ fun aPurchaseOrder(
         buyer = buyer,
         segments = segments.toList()
     )
+}
+
+private fun aPurchaseOrderDsl(function: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+    val builder = PurchaseOrderBuilder()
+    builder.function()
+    return builder.build()
+}
+
+class PurchaseOrderBuilder(
+    var product: String = "whatever product",
+    var buyer: String = "me, handsome",
+    val segments: MutableList<Segment> = mutableListOf()
+) {
+    fun build() : PurchaseOrder {
+
+        if (segments.isEmpty()) {
+            segments += defaultSegment
+        }
+
+        return PurchaseOrder(
+            product = product,
+            quantity = segments.sumQuantity(),
+            buyer = buyer,
+            segments = segments //TODO: check whether we need copy or not
+        )
+    }
 }
 
 fun aSegment(
