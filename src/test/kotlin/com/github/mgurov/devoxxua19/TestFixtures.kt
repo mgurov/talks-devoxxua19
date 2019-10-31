@@ -1,6 +1,5 @@
 package com.github.mgurov.devoxxua19
 
-import org.assertj.core.api.Assertions.tuple
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -75,14 +74,13 @@ class PurchaseOrderFixtureTests {
             }
         }
 
-        //TODO: revisit
         softly {
             assertThat(po.buyer).isEqualTo("buyer name")
 
-            assertThat(po.segments).extracting("status", "quantity")
+            assertThat(po.segments.map { it.status to it.quantity })
                 .containsExactly(
-                    tuple(SegmentStatus.CANCELLED, 2),
-                    tuple(SegmentStatus.CONFIRMED, 3)
+                    SegmentStatus.CANCELLED to 2,
+                    SegmentStatus.CONFIRMED to 3
                 )
         }
     }
