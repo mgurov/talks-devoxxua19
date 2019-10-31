@@ -18,7 +18,7 @@ fun aPurchaseOrder(
     )
 }
 
-private fun aPurchaseOrderDsl(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+fun aPurchaseOrderDsl(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
     val builder = PurchaseOrderBuilder()
     builder.adjust()
     return builder.build()
@@ -43,7 +43,7 @@ class PurchaseOrderBuilder(
         )
     }
 
-    fun aSegmentDsl(adjust: SegmentBuilder.() -> Unit) {
+    fun segment(adjust: SegmentBuilder.() -> Unit) {
         val builder = SegmentBuilder()
         builder.adjust()
         segments += builder.build()
@@ -92,11 +92,11 @@ class PurchaseOrderFixtureTests {
 
             buyer = "buyer name"
 
-            aSegmentDsl {
+            segment {
                 status = SegmentStatus.CANCELLED
                 quantity = 2
             }
-            aSegmentDsl {
+            segment {
                 status = SegmentStatus.CONFIRMED
                 quantity = 3
             }
