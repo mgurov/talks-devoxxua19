@@ -27,9 +27,9 @@ class BusinessLogicTest {
 
     @Test
     fun `should select by buyer - helper functions`() {
-        val expected1 = aPurchaseOrder("me")
-        val expected2 = aPurchaseOrder("me")
-        val unexpected1 = aPurchaseOrder("someone else")
+        val expected1 = aPurchaseOrder(buyer = "me")
+        val expected2 = aPurchaseOrder(buyer = "me")
+        val unexpected1 = aPurchaseOrder(buyer = "someone else")
 
         //when
         val actual = BusinessLogic.selectByBuyer(
@@ -46,10 +46,14 @@ class BusinessLogicTest {
         )
     }
 
-    fun aPurchaseOrder(buyer: String): PurchaseOrder {
+    fun aPurchaseOrder(
+        product: String = "whatever product",
+        quantity: Int = 1,
+        buyer: String = "me, handsome"
+    ): PurchaseOrder {
         return PurchaseOrder(
-            product = "whatever product",
-            quantity = 1,
+            product = product,
+            quantity = quantity,
             buyer = buyer
         )
     }
