@@ -19,7 +19,7 @@ class BusinessLogicTest {
             ), "me")
 
         //then
-        assertThat(actual).containsExactly(
+        assertThat(actual).containsExactlyInAnyOrder(
             expected1,
             expected2
         )
