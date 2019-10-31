@@ -59,8 +59,7 @@ class PurchaseOrderFixtureTests {
 
         softly {
             assertThat(actual.quantity).isEqualTo(1)
-            //TODO: introduce total segments helper
-            assertThat(actual.segments.sumBy { it.quantity }).isEqualTo(1)
+            assertThat(actual.segments.totalQuantity()).isEqualTo(1)
         }
     }
 }
@@ -79,7 +78,7 @@ private fun aPurchaseOrder(
 ): PurchaseOrder {
     return PurchaseOrder(
         product = product,
-        quantity = quantity ?: segments.sumBy { it.quantity },
+        quantity = quantity ?: segments.toList().totalQuantity(),
         buyer = buyer,
         segments = segments.toList()
     )
