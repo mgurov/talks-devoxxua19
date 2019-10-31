@@ -20,7 +20,8 @@ class BusinessLogicTest {
                 expected1,
                 expected2,
                 unexpected1
-            ), "me")
+            ), "me"
+        )
 
         //then
         assertThat(actual).containsExactlyInAnyOrder(
@@ -30,24 +31,22 @@ class BusinessLogicTest {
     }
 
     @Test
-    fun `should select open orders by buyer`() {
-        val expected1 = aPurchaseOrder(buyer = "me")
-        val expected2 = aPurchaseOrder(buyer = "me")
-        val unexpected1 = aPurchaseOrder(buyer = "someone else")
+    fun `should count open quantity`() {
+        val given = listOf(
+            aPurchaseOrder(segments = listOf(
+                aSegment(status = SegmentStatus.NEW, quantity = 1))),
+            aPurchaseOrder(segments = listOf(
+                aSegment(status = SegmentStatus.CANCELLED, quantity = 2),
+                aSegment(status = SegmentStatus.CONFIRMED, quantity = 3))),
+            aPurchaseOrder(segments = listOf(
+                aSegment(status = SegmentStatus.DELIVERED, quantity = 4)))
+        )
 
         //when
-        val actual = BusinessLogic.selectByBuyer(
-            listOf(
-                expected1,
-                expected2,
-                unexpected1
-            ), "me")
+        val actual: Int = BusinessLogic.countOpenQuantity(given)
 
         //then
-        assertThat(actual).containsExactlyInAnyOrder(
-            expected1,
-            expected2
-        )
+        assertThat(actual).`as`("1 NEW + 3 CONFIRMED").isEqualTo(4)
     }
 
 }
@@ -64,7 +63,7 @@ class PurchaseOrderFixtureTests {
     }
 }
 
-fun softly(assertionBlock: SoftAssertions.()->Unit) {
+fun softly(assertionBlock: SoftAssertions.() -> Unit) {
     assertSoftly {
         it.assertionBlock()
     }
@@ -74,7 +73,7 @@ private fun aPurchaseOrder(
     product: String = "whatever product",
     quantity: Int? = null,
     buyer: String = "me, handsome",
-    vararg segments: Segment = arrayOf(defaultSegment.copy(quantity = quantity ?: 1))
+    segments: List<Segment> = listOf(defaultSegment.copy(quantity = quantity ?: 1))
 ): PurchaseOrder {
     return PurchaseOrder(
         product = product,
@@ -83,5 +82,15 @@ private fun aPurchaseOrder(
         segments = segments.toList()
     )
 }
+
+private fun aSegment(
+    quantity: Int = 1,
+    status: SegmentStatus = SegmentStatus.NEW,
+    date: LocalDate = LocalDate.now().plusDays(1)
+) = Segment(
+    quantity = quantity,
+    status = status,
+    date = date
+)
 
 val defaultSegment = Segment(quantity = 1, status = SegmentStatus.NEW, date = LocalDate.now().plusDays(1))
