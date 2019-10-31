@@ -1,10 +1,7 @@
 package com.github.mgurov.devoxxua19
 
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.SoftAssertions
-import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 class BusinessLogicTest {
 
@@ -33,13 +30,22 @@ class BusinessLogicTest {
     @Test
     fun `should count open quantity`() {
         val given = listOf(
-            aPurchaseOrder(segments = listOf(
-                aSegment(status = SegmentStatus.NEW, quantity = 1))),
-            aPurchaseOrder(segments = listOf(
-                aSegment(status = SegmentStatus.CANCELLED, quantity = 2),
-                aSegment(status = SegmentStatus.CONFIRMED, quantity = 3))),
-            aPurchaseOrder(segments = listOf(
-                aSegment(status = SegmentStatus.DELIVERED, quantity = 4)))
+            aPurchaseOrder(
+                segments = listOf(
+                    aSegment(status = SegmentStatus.NEW, quantity = 1)
+                )
+            ),
+            aPurchaseOrder(
+                segments = listOf(
+                    aSegment(status = SegmentStatus.CANCELLED, quantity = 2),
+                    aSegment(status = SegmentStatus.CONFIRMED, quantity = 3)
+                )
+            ),
+            aPurchaseOrder(
+                segments = listOf(
+                    aSegment(status = SegmentStatus.DELIVERED, quantity = 4)
+                )
+            )
         )
 
         //when
@@ -50,47 +56,3 @@ class BusinessLogicTest {
     }
 
 }
-
-class PurchaseOrderFixtureTests {
-    @Test
-    fun `should default to quantity 1`() {
-        val actual = aPurchaseOrder()
-
-        softly {
-            assertThat(actual.quantity).isEqualTo(1)
-            assertThat(actual.segments.sumQuantity()).isEqualTo(1)
-        }
-    }
-}
-
-fun softly(assertionBlock: SoftAssertions.() -> Unit) {
-    assertSoftly {
-        it.assertionBlock()
-    }
-}
-
-private fun aPurchaseOrder(
-    product: String = "whatever product",
-    quantity: Int? = null,
-    buyer: String = "me, handsome",
-    segments: List<Segment> = listOf(defaultSegment.copy(quantity = quantity ?: 1))
-): PurchaseOrder {
-    return PurchaseOrder(
-        product = product,
-        quantity = quantity ?: segments.toList().sumQuantity(),
-        buyer = buyer,
-        segments = segments.toList()
-    )
-}
-
-private fun aSegment(
-    quantity: Int = 1,
-    status: SegmentStatus = SegmentStatus.NEW,
-    date: LocalDate = LocalDate.now().plusDays(1)
-) = Segment(
-    quantity = quantity,
-    status = status,
-    date = date
-)
-
-val defaultSegment = Segment(quantity = 1, status = SegmentStatus.NEW, date = LocalDate.now().plusDays(1))
