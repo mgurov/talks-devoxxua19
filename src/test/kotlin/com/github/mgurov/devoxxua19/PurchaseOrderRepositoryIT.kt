@@ -13,7 +13,14 @@ class PurchaseOrderRepositoryIT {
 
     @Test
     fun `should save and load`() {
-        assertThat(purchaseOrderRepository).isNotNull()
+        val given = aPurchaseOrder {}
+
+        //when
+        val id = purchaseOrderRepository.save(given)
+        val loaded = purchaseOrderRepository.load(id)
+        //then
+
+        assertThat(loaded).isEqualTo(given)
     }
 
 }
