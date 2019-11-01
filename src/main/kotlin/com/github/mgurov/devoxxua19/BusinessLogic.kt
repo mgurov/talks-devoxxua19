@@ -9,7 +9,9 @@ class BusinessLogic(
 
     fun selectOpenOrders(product: String): List<PurchaseOrder> {
         val productOrders = purchaseOrderRepository.findByProduct(product)
-        return productOrders
+        return productOrders.filter {order ->
+            order.segments.any { segment -> segment.isOpen() }
+        }
     }
 
     companion object {

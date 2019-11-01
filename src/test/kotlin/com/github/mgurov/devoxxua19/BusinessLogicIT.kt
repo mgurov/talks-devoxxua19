@@ -22,20 +22,24 @@ class BusinessLogicIT {
 
         val productCode = "product ${testData.nextId()}"
 
+        val fullyOpen = aPurchaseOrder {
+            product = productCode
+            segment { status = SegmentStatus.NEW; quantity = 1 }
+        }
+        val partiallyOpen = aPurchaseOrder {
+            product = productCode
+            segment { status = SegmentStatus.CANCELLED; quantity = 2 }
+            segment { status = SegmentStatus.CONFIRMED; quantity = 3 }
+        }
+        val closed = aPurchaseOrder {
+            product = productCode
+            segment { status = SegmentStatus.DELIVERED; quantity = 4 }
+        }
+
         val given = listOf(
-            aPurchaseOrder {
-                product = productCode
-                segment { status = SegmentStatus.NEW; quantity = 1 }
-            },
-            aPurchaseOrder {
-                product = productCode
-                segment { status = SegmentStatus.CANCELLED; quantity = 2 }
-                segment { status = SegmentStatus.CONFIRMED; quantity = 3 }
-            },
-            aPurchaseOrder {
-                product = productCode
-                segment { status = SegmentStatus.DELIVERED; quantity = 4 }
-            }
+            fullyOpen,
+            partiallyOpen,
+            closed
         )
 
         given.forEach { purchaseOrderRepository.save(it) }
@@ -46,7 +50,10 @@ class BusinessLogicIT {
 
         //then
 
-        assertThat(actual).containsExactlyInAnyOrder(*given.toTypedArray())
+        assertThat(actual)
+            .containsExactlyInAnyOrder(fullyOpen, partiallyOpen)
+            .doesNotContain(closed)
+
     }
 
 }
