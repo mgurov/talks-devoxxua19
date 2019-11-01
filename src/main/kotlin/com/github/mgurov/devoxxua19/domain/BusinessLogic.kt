@@ -6,6 +6,8 @@ object BusinessLogic {
     }
 
     fun countOpenQuantity(orders: List<PurchaseOrder>): Int {
-        return orders.sumBy { it.segments.sumQuantity() }
+        return orders.sumBy { order ->
+            order.segments.sumQuantity { segment -> segment.status.open}
+        }
     }
 }

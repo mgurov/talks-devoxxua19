@@ -21,10 +21,12 @@ data class Segment(
     val expectedDate: LocalDate
 )
 
-fun Iterable<Segment>.sumQuantity(): Int {
-    return this.sumBy { it.quantity }
+fun Iterable<Segment>.sumQuantity(filter: (Segment) -> Boolean = {true}): Int {
+    return this.filter(filter).sumBy { it.quantity }
 }
 
-enum class SegmentStatus {
-    NEW, CONFIRMED, RECEIVED, CANCELLED
+enum class SegmentStatus(
+    val open: Boolean
+) {
+    NEW(true), CONFIRMED(true), RECEIVED(false), CANCELLED(false)
 }
