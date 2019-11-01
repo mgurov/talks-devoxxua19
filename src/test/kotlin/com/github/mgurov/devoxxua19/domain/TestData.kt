@@ -33,9 +33,14 @@ class TestDataTests {
     fun `order quantity should equal sum segment quantity`() {
         val order = aPurchaseOrder(quantity = 9)
 
-        SoftAssertions.assertSoftly {
-            it.assertThat(order.quantity).isEqualTo(10)
-            it.assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
+        softly {
+            assertThat(order.quantity).isEqualTo(10)
+            assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
         }
+
     }
+}
+
+private fun softly(assertions: SoftAssertions.() -> Unit) {
+    SoftAssertions.assertSoftly(assertions)
 }
