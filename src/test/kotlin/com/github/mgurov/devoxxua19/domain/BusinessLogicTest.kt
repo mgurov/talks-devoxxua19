@@ -2,6 +2,7 @@ package com.github.mgurov.devoxxua19.domain
 
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class BusinessLogicTest {
 
@@ -33,6 +34,16 @@ fun aPurchaseOrder(
         productCode = productCode,
         quantity = quantity,
         buyer = buyer,
-        segments = emptyList()
+        segments = listOf(aSegment(quantity = quantity))
     )
 }
+
+fun aSegment(
+    status: SegmentStatus = SegmentStatus.NEW,
+    quantity: Int = 1,
+    expectedDate: LocalDate = LocalDate.now().plusDays(1)
+) = Segment(
+    status = status,
+    quantity = quantity,
+    expectedDate = expectedDate
+)
