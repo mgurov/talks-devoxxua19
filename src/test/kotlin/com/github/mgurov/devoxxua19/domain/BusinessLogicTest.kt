@@ -26,15 +26,27 @@ class BusinessLogicTest {
     @Test
     fun `should count open quantity`() {
         val given = listOf(
-            aPurchaseOrder(quantity = 1)
-                .copy(segments = listOf(aSegment(status = SegmentStatus.NEW, quantity = 1))),
-            aPurchaseOrder(quantity = 5)
-                .copy(segments = listOf(
-                    aSegment(status = SegmentStatus.CONFIRMED, quantity = 2),
-                    aSegment(status = SegmentStatus.RECEIVED, quantity = 3)
-                )),
-            aPurchaseOrder(quantity = 4)
-                .copy(segments = listOf(aSegment(status = SegmentStatus.CANCELLED, quantity = 4)))
+            aPurchaseOrderDsl {
+                segment {
+                    status = SegmentStatus.NEW; quantity = 1
+                }
+            },
+
+            aPurchaseOrderDsl{
+                segment {
+                    status = SegmentStatus.CONFIRMED; quantity = 2
+                }
+                segment {
+                    status = SegmentStatus.RECEIVED; quantity = 3
+                }
+
+            },
+
+            aPurchaseOrderDsl{
+                segment {
+                    status = SegmentStatus.CANCELLED; quantity = 4
+                }
+            }
         )
 
         //when

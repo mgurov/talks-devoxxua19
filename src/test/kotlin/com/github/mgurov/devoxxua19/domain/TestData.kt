@@ -17,6 +17,37 @@ fun aPurchaseOrder(
     )
 }
 
+fun aPurchaseOrderDsl(adjuster: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+
+    val builder = PurchaseOrderBuilder()
+    builder.adjuster()
+
+    return builder.build()
+}
+
+class PurchaseOrderBuilder(
+    var productCode: String = "whatever product",
+    var quantity: Int? = null,
+    var buyer: String = "anonymous",
+    private val segments: MutableList<Segment> = mutableListOf()
+) {
+    fun build(): PurchaseOrder {
+        val segmentsList = segments.toList()
+        return PurchaseOrder(
+            productCode = productCode,
+            quantity = quantity ?: segmentsList.sumQuantity(),
+            buyer = buyer,
+            segments = segmentsList
+        )
+    }
+
+    fun segment(adjuster: SegmentBuilder.() -> Unit) {
+        val builder = SegmentBuilder()
+        builder.adjuster()
+        this.segments += builder.build()
+    }
+}
+
 fun aSegment(
     status: SegmentStatus = SegmentStatus.NEW,
     quantity: Int = 1,
@@ -26,6 +57,18 @@ fun aSegment(
     quantity = quantity,
     expectedDate = expectedDate
 )
+
+class SegmentBuilder(
+    var status: SegmentStatus = SegmentStatus.NEW,
+    var quantity: Int = 1,
+    var expectedDate: LocalDate = LocalDate.now().plusDays(1)
+) {
+    fun build() = Segment(
+        status = status,
+        quantity = quantity,
+        expectedDate = expectedDate
+    )
+}
 
 class TestDataTests {
     @Test
