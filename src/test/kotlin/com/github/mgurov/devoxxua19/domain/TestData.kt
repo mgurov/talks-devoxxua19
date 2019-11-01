@@ -1,6 +1,7 @@
 package com.github.mgurov.devoxxua19.domain
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.SoftAssertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -30,8 +31,11 @@ fun aSegment(
 class TestDataTests {
     @Test
     fun `order quantity should equal sum segment quantity`() {
-        val order = aPurchaseOrder(quantity = 10)
-        assertThat(order.quantity).isEqualTo(10)
-        assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
+        val order = aPurchaseOrder(quantity = 9)
+
+        SoftAssertions.assertSoftly {
+            it.assertThat(order.quantity).isEqualTo(10)
+            it.assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
+        }
     }
 }
