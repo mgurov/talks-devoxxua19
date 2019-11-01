@@ -1,5 +1,7 @@
 package com.github.mgurov.devoxxua19.domain
 
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 fun aPurchaseOrder(
@@ -24,3 +26,12 @@ fun aSegment(
     quantity = quantity,
     expectedDate = expectedDate
 )
+
+class TestDataTests {
+    @Test
+    fun `order quantity should equal sum segment quantity`() {
+        val order = aPurchaseOrder(quantity = 10)
+        assertThat(order.quantity).isEqualTo(10)
+        assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
+    }
+}
