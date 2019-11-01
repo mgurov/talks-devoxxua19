@@ -1,6 +1,6 @@
 package com.github.mgurov.devoxxua19.domain
 
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class BusinessLogicTest {
@@ -20,7 +20,6 @@ class BusinessLogicTest {
             ), "me")
 
         //then
-        assertThat(actual).containsExactly(expected1, expected2)
-
+        assertThat(actual).containsExactlyInAnyOrder(expected1, expected2)
     }
 }
