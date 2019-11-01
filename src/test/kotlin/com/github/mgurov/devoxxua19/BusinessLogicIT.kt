@@ -14,21 +14,26 @@ class BusinessLogicIT {
     @Autowired
     private lateinit var businessLogic: BusinessLogic
 
+    @Autowired
+    private lateinit var testData: TestData
+
     @Test
     fun `should save and load`() {
 
+        val productCode = "product ${testData.nextId()}"
+
         val given = listOf(
             aPurchaseOrder {
-                product = "p"
+                product = productCode
                 segment { status = SegmentStatus.NEW; quantity = 1 }
             },
             aPurchaseOrder {
-                product = "p"
+                product = productCode
                 segment { status = SegmentStatus.CANCELLED; quantity = 2 }
                 segment { status = SegmentStatus.CONFIRMED; quantity = 3 }
             },
             aPurchaseOrder {
-                product = "p"
+                product = productCode
                 segment { status = SegmentStatus.DELIVERED; quantity = 4 }
             }
         )
@@ -37,7 +42,7 @@ class BusinessLogicIT {
 
         //when
 
-        val actual = businessLogic.selectOpenOrders("p")
+        val actual = businessLogic.selectOpenOrders(productCode)
 
         //then
 

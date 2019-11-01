@@ -3,10 +3,13 @@ package com.github.mgurov.devoxxua19
 import org.springframework.stereotype.Component
 
 @Component
-class BusinessLogic {
+class BusinessLogic(
+    private val purchaseOrderRepository: PurchaseOrderRepository
+) {
 
     fun selectOpenOrders(product: String): List<PurchaseOrder> {
-        TODO()
+        val productOrders = purchaseOrderRepository.findByProduct(product)
+        return productOrders
     }
 
     companion object {
