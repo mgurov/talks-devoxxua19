@@ -20,7 +20,7 @@ class PurchaseOrderRepositoryIT {
         val loaded = purchaseOrderRepository.load(id)
         //then
 
-        assertThat(loaded).isEqualTo(given)
+        assertThat(loaded).isEqualToIgnoringGivenFields(given, "id")
     }
 
 }
