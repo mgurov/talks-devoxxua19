@@ -7,9 +7,9 @@ class BusinessLogicTest {
 
     @Test
     fun `should select by buyer`() {
-        val expected1 = PurchaseOrder(productCode = "product A", quantity = 1, buyer = "me")
-        val expected2 = PurchaseOrder(productCode = "product B", quantity = 1, buyer = "me")
-        val notExpected = PurchaseOrder(productCode = "product A", quantity = 1, buyer = "someone else")
+        val expected1 = aPurchaseOrder(buyer = "me")
+        val expected2 = aPurchaseOrder(buyer = "me")
+        val notExpected = aPurchaseOrder(buyer = "someone else")
 
         //when
         val actual = BusinessLogic.selectByBuyer(
@@ -22,4 +22,12 @@ class BusinessLogicTest {
         //then
         assertThat(actual).containsExactlyInAnyOrder(expected1, expected2)
     }
+}
+
+fun aPurchaseOrder(
+    productCode: String = "whatever product",
+    quantity: Int = 1,
+    buyer: String = "anonymous"
+): PurchaseOrder {
+    return PurchaseOrder(productCode = productCode, quantity = quantity, buyer = buyer)
 }
