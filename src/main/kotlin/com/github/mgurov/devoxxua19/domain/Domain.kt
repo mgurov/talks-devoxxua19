@@ -7,7 +7,13 @@ data class PurchaseOrder(
     val quantity: Int,
     val buyer: String,
     val segments: List<Segment>
-)
+) {
+    init {
+        val segmentsQuantity = segments.sumBy { it.quantity }
+        check(quantity == segmentsQuantity)
+            {"Expect po quantity ($quantity) to equal ∑ segment quantities ($segmentsQuantity)"}
+    }
+}
 
 data class Segment(
     val status: SegmentStatus,

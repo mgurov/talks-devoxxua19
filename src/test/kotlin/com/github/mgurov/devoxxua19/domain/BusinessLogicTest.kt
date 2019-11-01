@@ -29,5 +29,10 @@ fun aPurchaseOrder(
     quantity: Int = 1,
     buyer: String = "anonymous"
 ): PurchaseOrder {
-    return PurchaseOrder(productCode = productCode, quantity = quantity, buyer = buyer)
+    return PurchaseOrder(
+        productCode = productCode,
+        quantity = quantity,
+        buyer = buyer,
+        segments = emptyList()
+    )
 }
