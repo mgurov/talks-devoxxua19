@@ -9,7 +9,7 @@ data class PurchaseOrder(
     val segments: List<Segment>
 ) {
     init {
-        val segmentsQuantity = segments.sumBy { it.quantity }
+        val segmentsQuantity = segments.sumQuantity()
         check(quantity == segmentsQuantity)
             {"Expect po quantity ($quantity) to equal ∑ segment quantities ($segmentsQuantity)"}
     }
@@ -20,6 +20,10 @@ data class Segment(
     val quantity: Int,
     val expectedDate: LocalDate
 )
+
+fun Iterable<Segment>.sumQuantity(): Int {
+    return this.sumBy { it.quantity }
+}
 
 enum class SegmentStatus {
     NEW, CONFIRMED, RECEIVED, CANCELLED

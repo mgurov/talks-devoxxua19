@@ -34,7 +34,7 @@ class TestDataTests {
 
         softly {
             assertThat(order.quantity).isEqualTo(10)
-            assertThat(order.segments.sumBy { it.quantity }).isEqualTo(10)
+            assertThat(order.segments.sumQuantity()).isEqualTo(10)
         }
     }
 }
