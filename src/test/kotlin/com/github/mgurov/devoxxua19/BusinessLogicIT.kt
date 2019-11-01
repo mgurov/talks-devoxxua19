@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest
 class BusinessLogicIT {
 
     @Autowired
-    private lateinit var purchaseOrderRepository: PurchaseOrderRepository
-
-    @Autowired
     private lateinit var businessLogic: BusinessLogic
 
     @Autowired
@@ -22,38 +19,27 @@ class BusinessLogicIT {
 
         val productCode = "product ${testData.nextId()}"
 
-        val fullyOpen = aPurchaseOrder {
+        val fullyOpen = testData.givenAPurchaseOrder {
             product = productCode
             segment { status = SegmentStatus.NEW; quantity = 1 }
         }
-        val partiallyOpen = aPurchaseOrder {
+        val partiallyOpen = testData.givenAPurchaseOrder {
             product = productCode
             segment { status = SegmentStatus.CANCELLED; quantity = 2 }
             segment { status = SegmentStatus.CONFIRMED; quantity = 3 }
         }
-        val closed = aPurchaseOrder {
+        val closed = testData.givenAPurchaseOrder {
             product = productCode
             segment { status = SegmentStatus.DELIVERED; quantity = 4 }
         }
 
-        val given = listOf(
-            fullyOpen,
-            partiallyOpen,
-            closed
-        )
-
-        given.forEach { purchaseOrderRepository.save(it) }
-
         //when
-
         val actual = businessLogic.selectOpenOrders(productCode)
 
         //then
-
         assertThat(actual)
             .containsExactlyInAnyOrder(fullyOpen, partiallyOpen)
             .doesNotContain(closed)
-
     }
 
 }
