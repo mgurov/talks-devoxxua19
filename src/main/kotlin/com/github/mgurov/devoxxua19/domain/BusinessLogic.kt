@@ -4,4 +4,8 @@ object BusinessLogic {
     fun selectByBuyer(orders: List<PurchaseOrder>, buyer: String): List<PurchaseOrder> {
         return orders.filter { it.buyer == buyer }
     }
+
+    fun countOpenQuantity(orders: List<PurchaseOrder>): Int {
+        return orders.sumBy { it.segments.sumQuantity() }
+    }
 }
