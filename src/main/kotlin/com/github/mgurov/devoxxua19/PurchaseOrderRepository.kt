@@ -48,6 +48,7 @@ class PurchaseOrderRepository(
 
     private val rowMapper: (ResultSet, Int) -> PurchaseOrder = {rs, _ ->
         PurchaseOrder(
+            rs.getLong("id"),
             rs.getString("product"),
             rs.getInt("quantity"),
             rs.getString("buyer"),

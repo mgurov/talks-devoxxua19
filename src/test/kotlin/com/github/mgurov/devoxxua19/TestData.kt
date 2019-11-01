@@ -15,7 +15,7 @@ class TestData(
 
     fun givenAPurchaseOrder(adjust: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
         val po = aPurchaseOrder(adjust)
-        purchaseOrderRepository.save(po)
-        return po
+        val id =purchaseOrderRepository.save(po)
+        return po.copy(id = id)
     }
 }

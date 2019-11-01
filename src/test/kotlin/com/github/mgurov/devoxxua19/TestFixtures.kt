@@ -22,6 +22,7 @@ class PurchaseOrderBuilder(
         }
 
         return PurchaseOrder(
+            id = -1L,
             product = product,
             quantity = segments.sumQuantity(),
             buyer = buyer,

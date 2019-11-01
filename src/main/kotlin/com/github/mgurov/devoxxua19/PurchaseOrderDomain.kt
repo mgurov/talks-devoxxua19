@@ -3,6 +3,7 @@ package com.github.mgurov.devoxxua19
 import java.time.LocalDate
 
 data class PurchaseOrder(
+    val id: Long,
     val product: String,
     val quantity: Int,
     val buyer: String,
