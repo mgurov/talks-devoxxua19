@@ -7,9 +7,18 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class TestData(private val jdbcTemplate: JdbcTemplate) {
+class TestData(
+    private val jdbcTemplate: JdbcTemplate,
+    private val purchaseOrderRepository: PurchaseOrderRepository
+) {
     fun nextId(): Long {
         return jdbcTemplate.queryForObject("select nextval('test_sequence_dont_use_for_pro')", Long::class.java)!!
+    }
+
+    fun givenAPurchaseOrder(adjuster: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
+        val order = aPurchaseOrder(adjuster)
+        purchaseOrderRepository.save(order)
+        return order
     }
 }
 

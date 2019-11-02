@@ -11,8 +11,6 @@ class BusinessLogicIT {
     @Autowired
     private lateinit var businessLogic: BusinessLogic
     @Autowired
-    private lateinit var purchaseOrderRepository: PurchaseOrderRepository
-    @Autowired
     private lateinit var testData: TestData
 
     @Test
@@ -20,14 +18,14 @@ class BusinessLogicIT {
 
         val product = "product " + testData.nextId()
         //given
-        val expected1 = aPurchaseOrder {
+        val expected1 = testData.givenAPurchaseOrder {
             productCode = product
             segment {
                 status = SegmentStatus.NEW; quantity = 1
             }
         }
 
-        val expected2 = aPurchaseOrder {
+        val expected2 = testData.givenAPurchaseOrder {
             productCode = product
             segment {
                 status = SegmentStatus.CONFIRMED; quantity = 2
@@ -37,18 +35,13 @@ class BusinessLogicIT {
             }
 
         }
-        val unexpected = aPurchaseOrder {
+
+        testData.givenAPurchaseOrder {
             productCode = product
             segment {
                 status = SegmentStatus.CANCELLED; quantity = 4
             }
         }
-
-        listOf(
-            expected1,
-            expected2,
-            unexpected
-        ).forEach { purchaseOrderRepository.save(it) }
 
         //when
         val actual = businessLogic.selectOpenProductOrders(product)
