@@ -35,7 +35,18 @@ class PurchaseOrderBuilder(
     private val segments: MutableList<Segment> = mutableListOf()
 ) {
     fun build(): PurchaseOrder {
-        val segmentsList = segments.toList()
+
+        val orderQuantity = quantity
+
+        val segmentsList = mutableListOf<Segment>()
+        if (segments.isEmpty()) {
+            segmentsList += aSegment {
+                this.quantity = orderQuantity ?: 1
+            }
+        } else {
+            segmentsList.addAll(this.segments)
+        }
+
         return PurchaseOrder(
             productCode = productCode,
             quantity = quantity ?: segmentsList.sumQuantity(),
@@ -45,11 +56,16 @@ class PurchaseOrderBuilder(
     }
 
     fun segment(adjuster: SegmentBuilder.() -> Unit) {
-        val builder = SegmentBuilder()
-        builder.adjuster()
-        this.segments += builder.build()
+        this.segments += aSegment(adjuster)
     }
 }
+
+fun aSegment(adjuster: SegmentBuilder.() -> Unit): Segment {
+    val builder = SegmentBuilder()
+    builder.adjuster()
+    return builder.build()
+}
+
 
 class SegmentBuilder(
     var status: SegmentStatus = SegmentStatus.NEW,
