@@ -2,7 +2,16 @@ package com.github.mgurov.devoxxua19.domain
 
 import com.github.mgurov.devoxxua19.softly
 import org.junit.jupiter.api.Test
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.stereotype.Component
 import java.time.LocalDate
+
+@Component
+class TestData(private val jdbcTemplate: JdbcTemplate) {
+    fun nextId(): Long {
+        return jdbcTemplate.queryForObject("select nextval('test_sequence_dont_use_for_pro')", Long::class.java)!!
+    }
+}
 
 fun aPurchaseOrder(adjuster: PurchaseOrderBuilder.() -> Unit): PurchaseOrder {
     val builder = PurchaseOrderBuilder()

@@ -12,19 +12,23 @@ class BusinessLogicIT {
     private lateinit var businessLogic: BusinessLogic
     @Autowired
     private lateinit var purchaseOrderRepository: PurchaseOrderRepository
+    @Autowired
+    private lateinit var testData: TestData
 
     @Test
     fun `should select open orders for a given product code`() {
+
+        val product = "product " + testData.nextId()
         //given
         val expected1 = aPurchaseOrder {
-            productCode = "product"
+            productCode = product
             segment {
                 status = SegmentStatus.NEW; quantity = 1
             }
         }
 
         val expected2 = aPurchaseOrder {
-            productCode = "product"
+            productCode = product
             segment {
                 status = SegmentStatus.CONFIRMED; quantity = 2
             }
@@ -34,7 +38,7 @@ class BusinessLogicIT {
 
         }
         val unexpected = aPurchaseOrder {
-            productCode = "product"
+            productCode = product
             segment {
                 status = SegmentStatus.CANCELLED; quantity = 4
             }
@@ -47,7 +51,7 @@ class BusinessLogicIT {
         ).forEach { purchaseOrderRepository.save(it) }
 
         //when
-        val actual = businessLogic.selectOpenProductOrders("product")
+        val actual = businessLogic.selectOpenProductOrders(product)
         //then
         assertThat(actual).containsExactlyInAnyOrder(expected1, expected2)
     }
