@@ -9,6 +9,7 @@ class BusinessLogic(
 
     fun selectOpenProductOrders(productCode: String): List<PurchaseOrder> {
         return purchaseOrderRepository.findByProductCode(productCode)
+            .filter { order -> order.segments.sumOpenQuantity() > 0 }
     }
 
     companion object {
@@ -18,7 +19,7 @@ class BusinessLogic(
 
         fun countOpenQuantity(orders: List<PurchaseOrder>): Int {
             return orders.sumBy { order ->
-                order.segments.sumQuantity { segment -> segment.status.open}
+                order.segments.sumOpenQuantity()
             }
         }
     }

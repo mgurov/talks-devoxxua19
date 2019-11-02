@@ -21,6 +21,10 @@ data class Segment(
     val expectedDate: LocalDate
 )
 
+fun Iterable<Segment>.sumOpenQuantity(): Int {
+    return this.sumQuantity { segment -> segment.status.open}
+}
+
 fun Iterable<Segment>.sumQuantity(filter: (Segment) -> Boolean = {true}): Int {
     return this.filter(filter).sumBy { it.quantity }
 }
