@@ -39,6 +39,13 @@ class PurchaseOrderRepository(
         """.trimIndent(), mapOf("id" to id), rowMapper)
     }
 
+    fun findByProductCode(productCode: String): List<PurchaseOrder> {
+        return jdbcTemplate.query("""
+            select * from purchase_orders 
+            where product_code = :product_code
+        """.trimIndent(), mapOf("product_code" to productCode), rowMapper)
+    }
+
     private val rowMapper: (ResultSet, Int) -> PurchaseOrder = {rs, _ ->
         PurchaseOrder(
             rs.getString("product_code"),
